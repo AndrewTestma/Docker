@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"os/exec"
 	"syscall"
@@ -9,28 +9,18 @@ import (
 
 func main() {
 	cmd := exec.Command("sh")
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Cloneflags: syscall.CLONE_NEWUTS,
-		UidMappings: []syscall.SysProcIDMap{{
-			ContainerID: 0,
-			HostID:      0,
-			Size:        1,
-		},
-		},
-		GidMappings: []syscall.SysProcIDMap{
-			{
-				ContainerID: 0,
-				HostID:      0,
-				Size:        1,
-			},
-		},
-	}
 
+	cmd.Env = []string{"PS1=-[namespace-process]-#"}
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Cloneflags: syscall.CLONE_NEWUTS,
+	}
+
 	if err := cmd.Run(); err != nil {
-		log.Fatal(err)
+		fmt.Printf("Error running the /bin/sh command - %s\n", err)
+		os.Exit(1)
 	}
 }
