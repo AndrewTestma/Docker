@@ -17,6 +17,20 @@ func main() {
 
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Cloneflags: syscall.CLONE_NEWUTS,
+		/*UidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID: os.Geteuid(),
+				Size: 1,
+			},
+		},
+		GidMappings: []syscall.SysProcIDMap{
+			{
+				ContainerID: 0,
+				HostID: os.Getegid(),
+				Size: 1,
+			},
+		},*/
 	}
 
 	if err := cmd.Run(); err != nil {
